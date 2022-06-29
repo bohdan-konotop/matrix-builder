@@ -1,0 +1,18 @@
+<div class="builder__wrapper">
+  <form [formGroup]="form" class="builder">
+    <h1 class="builder__logo">Matrix Builder</h1>
+    <label class="builder__label">
+      Enter the number of columns:
+      <input class="builder__input" formControlName="col" type="number">
+    </label>
+    <label class="builder__label">
+      Enter the number of rows:
+      <input class="builder__input" formControlName="row" type="number">
+    </label>
+    <label class="builder__label">
+      Enter the number of cells:
+      <input class="builder__input" formControlName="cell" type="number">
+    </label>
+    <button (click)="generateMatrix()" class="builder__btn">Create matrix</button>
+  </form>
+</div>

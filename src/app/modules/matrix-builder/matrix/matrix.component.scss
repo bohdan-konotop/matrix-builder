@@ -1,0 +1,72 @@
+.matrix__wrapper {
+  width: fit-content;
+  margin: 0 auto;
+
+  .matrix {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+
+    &__btn {
+      font-weight: 700;
+      margin-top: 30px;
+      padding: 8px 10px;
+      color: #6e0000;
+      background: #f7ff00;
+      border-radius: 5px;
+      box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    &__table {
+      padding-top: 30px;
+      border-spacing: 5px;
+
+      th, td {
+        text-align: center;
+        font-weight: 700;
+        width: 50px;
+        height: 30px;
+      }
+
+      td {
+        background: #7acbff;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      td:last-of-type, tr:last-child > td {
+        background: #00ad9c;
+      }
+
+      tr > td:first-child {
+        background: transparent;
+      }
+    }
+
+    &__delete-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 30px;
+      width: 40px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    &__delete-row:hover {
+      color: #6e0000;
+    }
+
+    .matrix__table .matrix__td__close {
+      background: #f7ff00;
+    }
+
+    .matrix__table .matrix__td__active {
+      background: #6e0000;
+      color: #fff;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+.builder__wrapper {
+  width: fit-content;
+  margin: 0 auto;
+  background: #00ad9c;
+}
+.builder__wrapper .builder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 60px;
+}
+.builder__wrapper .builder__logo {
+  display: inline;
+  font-size: 40px;
+  font-weight: 700;
+  color: #f7ff00;
+  margin: 0;
+}
+.builder__wrapper .builder__label {
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 17px;
+  padding-top: 15px;
+  width: 320px;
+}
+.builder__wrapper .builder__input {
+  border-radius: 15%;
+  width: 50px;
+}
+.builder__wrapper .builder__btn {
+  font-weight: 700;
+  margin-top: 30px;
+  padding: 8px 10px;
+  color: #6e0000;
+  background: #7acbff;
+  border-radius: 5px;
+  box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.1);
+}
+
+/*# sourceMappingURL=builder.component.css.map */

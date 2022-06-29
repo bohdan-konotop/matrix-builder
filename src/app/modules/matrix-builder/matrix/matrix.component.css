@@ -1,0 +1,63 @@
+.matrix__wrapper {
+  width: fit-content;
+  margin: 0 auto;
+}
+.matrix__wrapper .matrix {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
+}
+.matrix__wrapper .matrix__btn {
+  font-weight: 700;
+  margin-top: 30px;
+  padding: 8px 10px;
+  color: #6e0000;
+  background: #f7ff00;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.12);
+}
+.matrix__wrapper .matrix__table {
+  padding-top: 30px;
+  border-spacing: 5px;
+}
+.matrix__wrapper .matrix__table th, .matrix__wrapper .matrix__table td {
+  text-align: center;
+  font-weight: 700;
+  width: 50px;
+  height: 30px;
+}
+.matrix__wrapper .matrix__table td {
+  background: #7acbff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.matrix__wrapper .matrix__table td:last-of-type, .matrix__wrapper .matrix__table tr:last-child > td {
+  background: #00ad9c;
+}
+.matrix__wrapper .matrix__table tr > td:first-child {
+  background: transparent;
+}
+.matrix__wrapper .matrix__delete-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 40px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.matrix__wrapper .matrix__delete-row:hover {
+  color: #6e0000;
+}
+.matrix__wrapper .matrix .matrix__table .matrix__td__close {
+  background: #f7ff00;
+}
+.matrix__wrapper .matrix .matrix__table .matrix__td__active {
+  background: #6e0000;
+  color: #fff;
+}
+
+/*# sourceMappingURL=matrix.component.css.map */
