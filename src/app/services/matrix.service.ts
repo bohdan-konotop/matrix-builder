@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { FormValue, MatrixData } from '../modules/interfaces';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { FormValue, Matrix, MatrixData } from '../modules/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class MatrixService {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
-  getMatrixObservable() {
+  getMatrixObservable(): Observable<MatrixData> {
     return this.matrixData$;
   }
 
@@ -25,41 +25,42 @@ export class MatrixService {
     let matrixData: MatrixData = { matrix: [], cell: value.cell };
 
     for (let i = 0; i < value.col; i++) {
-      const rowRandom = [];
+      const rowRandom: Array<Matrix> = [];
 
       for (let j = 0; j < value.row; j++) {
-        rowRandom[j] = MatrixService.randomFromTo(100, 1000);
+        rowRandom.push({
+          value: MatrixService.randomFromTo(100, 1000),
+          close: false,
+        });
       }
-
       matrixData.matrix.push(rowRandom);
     }
     this.matrixData.next(matrixData);
   }
 
-  deleteRow(index: number) {
-    const matrixData = this.getMatrixData();
+  deleteRow(index: number): void {
+    const matrixData: MatrixData = this.getMatrixData();
 
     matrixData.matrix = [
       ...matrixData.matrix.slice(0, index),
       ...matrixData.matrix.slice(index + 1, matrixData.matrix.length),
     ];
-
     this.matrixData.next(matrixData);
   }
 
   incrementCell(rowIndex: number, colIndex: number): void {
-    const matrixData = this.getMatrixData();
+    const matrixData: MatrixData = this.getMatrixData();
 
-    matrixData.matrix[rowIndex][colIndex]++;
+    matrixData.matrix[rowIndex][colIndex].value++;
     this.matrixData.next(matrixData);
   }
 
-  addRow() {
+  addRow(): void {
     const matrixData = this.getMatrixData();
-    let row: number[] = [];
+    let row: Matrix[] = [];
 
     matrixData.matrix[0].forEach(() => {
-      row.push(MatrixService.randomFromTo(100, 1000));
+      row.push({ value: MatrixService.randomFromTo(100, 1000), close: false });
     });
     matrixData.matrix.push(row);
     this.matrixData.next(matrixData);

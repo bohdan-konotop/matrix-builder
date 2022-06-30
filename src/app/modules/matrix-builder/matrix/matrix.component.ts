@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatrixService } from '../../../services/matrix.service';
+import { MatrixData } from '../../interfaces';
 
 @Component({
   selector: 'app-matrix',
@@ -7,43 +8,40 @@ import { MatrixService } from '../../../services/matrix.service';
   styleUrls: ['./matrix.component.scss'],
 })
 export class MatrixComponent implements OnInit {
-  matrix: Array<number[]> | [] = [];
-  arrayOfSum: number[] = [];
-  closestCells: Array<boolean[]> = [];
+  matrixData: MatrixData = { matrix: [], cell: 0 };
 
   constructor(private matrixService: MatrixService) {}
 
   ngOnInit(): void {
     this.matrixService.getMatrixObservable().subscribe((matrixData) => {
-      this.matrix = matrixData.matrix;
-      this.arrayOfSum = [];
-      this.pushSumToArray(this.arrayOfSum);
-      this.closestCells = [];
-      this.matrix.forEach((row, index) => {
-        this.closestCells[index] = Array(row.length).fill(false);
-      });
+      this.matrixData = matrixData;
     });
   }
 
-  pushSumToArray(array: number[]): void {
-    this.matrix.forEach((row) => {
-      array.push(row.reduce((total, cell) => total + cell));
-    });
+  getSumOfRow(index: number): number {
+    return this.matrixData.matrix[index].reduce((total, cell) => {
+      return total + cell.value;
+    }, 0);
   }
 
   getAvgOfCol(index: number): number {
-    let amount = 0;
+    const amount = this.matrixData.matrix.reduce((total, cell) => {
+      return total + cell[index].value;
+    }, 0);
 
-    this.matrix.forEach((col) => {
-      amount += col[index];
-    });
-
-    return Math.round(amount / this.matrix.length);
+    return Math.round(amount / this.matrixData.matrix.length);
   }
 
   getAvgOfSum(): number {
-    const sum = this.arrayOfSum.reduce((total, cell) => total + cell);
-    return Math.round(sum / this.arrayOfSum.length);
+    let arrayOfSum: number[] = [];
+    this.matrixData.matrix.forEach((_, index) => {
+      arrayOfSum.push(this.getSumOfRow(index));
+    });
+
+    const sum = arrayOfSum.reduce((total, cell) => {
+      return total + cell;
+    }, 0);
+    return Math.round(sum / arrayOfSum.length);
   }
 
   deleteRow(index: number): void {
@@ -59,32 +57,34 @@ export class MatrixComponent implements OnInit {
   }
 
   mouseEnterHover(event: MouseEvent, indexRow: number, indexCol: number): void {
-    //this.refillCellHover[indexRow][indexCol] = true;
     (event.target as HTMLElement).classList.add('matrix__td__active');
 
-    this.matrix.forEach((row, rowIndex) => {
+    this.matrixData.matrix.forEach((row, rowIndex) => {
       row.forEach((_, cellIndex) => {
-        this.closestCells[rowIndex][cellIndex] = this.findClosest(
+        this.matrixData.matrix[rowIndex][cellIndex].close = this.findClosest(
           indexRow,
           indexCol
-        ).includes(this.matrix[rowIndex][cellIndex]);
+        ).includes(this.matrixData.matrix[rowIndex][cellIndex].value);
       });
     });
   }
 
   findClosest(indexRow: number, indexCol: number): number[] {
-    const chosenCell = this.matrix[indexRow][indexCol];
-    const merged: number[] = [...this.matrix.flat(1)];
+    const chosenCell = this.matrixData.matrix[indexRow][indexCol].value;
+    const merged: number[] = [];
+    this.matrixData.matrix.forEach((col) =>
+      col.map((cell) => merged.push(cell.value))
+    );
 
     const sliceChosen = [
       ...merged.slice(
         0,
-        (indexRow + 1) * this.matrix[0].length -
-          (this.matrix[0].length - indexCol)
+        (indexRow + 1) * this.matrixData.matrix[0].length -
+          (this.matrixData.matrix[0].length - indexCol)
       ),
       ...merged.slice(
-        (indexRow + 1) * this.matrix[0].length -
-          (this.matrix[0].length - indexCol) +
+        (indexRow + 1) * this.matrixData.matrix[0].length -
+          (this.matrixData.matrix[0].length - indexCol) +
           1,
         merged.length
       ),
@@ -99,18 +99,13 @@ export class MatrixComponent implements OnInit {
         return 0;
       })
       .slice(0, this.matrixService.getMatrixData().cell);
-
-    // let indexes: number[] = [];
-    // closest.forEach((num) => {
-    //   indexes.push(merged.findIndex((cell) => cell === num));
-    // });
   }
 
-  mouseLeaveHover(event: MouseEvent, indexRow: number, indexCol: number): void {
+  mouseLeaveHover(event: MouseEvent): void {
     (event.target as HTMLElement).classList.remove('matrix__td__active');
 
-    this.closestCells.map((row) => {
-      return row.fill(false);
+    this.matrixData.matrix.map((row) => {
+      return row.map((cell) => (cell.close = false));
     });
   }
 

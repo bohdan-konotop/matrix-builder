@@ -1,5 +1,10 @@
+export interface Matrix {
+  value: number;
+  close: boolean;
+}
+
 export interface MatrixData {
-  matrix: Array<number[]>;
+  matrix: Array<Matrix[]>;
   cell: number;
 }
 
