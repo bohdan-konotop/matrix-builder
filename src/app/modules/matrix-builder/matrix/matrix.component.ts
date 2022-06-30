@@ -10,7 +10,6 @@ export class MatrixComponent implements OnInit {
   matrix: Array<number[]> | [] = [];
   arrayOfSum: number[] = [];
   closestCells: Array<boolean[]> = [];
-  refillCellHover: Array<boolean[]> = [];
 
   constructor(private matrixService: MatrixService) {}
 
@@ -19,10 +18,8 @@ export class MatrixComponent implements OnInit {
       this.matrix = matrixData.matrix;
       this.arrayOfSum = [];
       this.pushSumToArray(this.arrayOfSum);
-      this.refillCellHover = [];
       this.closestCells = [];
       this.matrix.forEach((row, index) => {
-        this.refillCellHover[index] = Array(row.length).fill(false);
         this.closestCells[index] = Array(row.length).fill(false);
       });
     });
@@ -61,8 +58,9 @@ export class MatrixComponent implements OnInit {
     this.matrixService.incrementCell(rowIndex, colIndex);
   }
 
-  mouseEnterHover(indexRow: number, indexCol: number): void {
-    this.refillCellHover[indexRow][indexCol] = true;
+  mouseEnterHover(event: MouseEvent, indexRow: number, indexCol: number): void {
+    //this.refillCellHover[indexRow][indexCol] = true;
+    (event.target as HTMLElement).classList.add('matrix__td__active');
 
     this.matrix.forEach((row, rowIndex) => {
       row.forEach((_, cellIndex) => {
@@ -108,8 +106,8 @@ export class MatrixComponent implements OnInit {
     // });
   }
 
-  mouseLeaveHover(indexRow: number, indexCol: number): void {
-    this.refillCellHover[indexRow][indexCol] = false;
+  mouseLeaveHover(event: MouseEvent, indexRow: number, indexCol: number): void {
+    (event.target as HTMLElement).classList.remove('matrix__td__active');
 
     this.closestCells.map((row) => {
       return row.fill(false);

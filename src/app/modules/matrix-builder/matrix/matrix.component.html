@@ -15,11 +15,10 @@
         <td>{{ rowIndex + 1 }}</td>
         <td
           (click)="incrementCell(rowIndex, colIndex)"
-          (mouseenter)="mouseEnterHover(rowIndex, colIndex)"
-          (mouseleave)="mouseLeaveHover(rowIndex, colIndex)"
+          (mouseenter)="mouseEnterHover($event, rowIndex, colIndex)"
+          (mouseleave)="mouseLeaveHover($event, rowIndex, colIndex)"
           *ngFor="let cell of row; let colIndex = index; trackBy: cellTrackBy"
           [ngClass]="{
-            matrix__td__active: refillCellHover[rowIndex][colIndex],
             matrix__td__close: closestCells[rowIndex][colIndex]
           }"
         >
