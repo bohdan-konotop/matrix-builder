@@ -35,6 +35,7 @@
 }
 .matrix__wrapper .matrix__table td:last-of-type, .matrix__wrapper .matrix__table tr:last-child > td {
   background: #00ad9c;
+  cursor: default;
 }
 .matrix__wrapper .matrix__table tr > td:first-child {
   background: transparent;

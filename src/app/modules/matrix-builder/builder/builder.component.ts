@@ -25,6 +25,6 @@ export class BuilderComponent {
   generateMatrix(): void {
     if (!this.form.valid) return;
 
-    this.matrixService.generateMatrix(this.form.value);
+    this.matrixService.generateMatrixData(this.form.value);
   }
 }

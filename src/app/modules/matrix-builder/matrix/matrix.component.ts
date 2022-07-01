@@ -8,7 +8,7 @@ import { MatrixData } from '../../interfaces';
   styleUrls: ['./matrix.component.scss'],
 })
 export class MatrixComponent implements OnInit {
-  matrixData: MatrixData = { matrix: [], cell: 0 };
+  matrixData: MatrixData = { matrix: [], cell: 0, avg: [], avgOfSum: 0 };
 
   constructor(private matrixService: MatrixService) {}
 
@@ -16,32 +16,6 @@ export class MatrixComponent implements OnInit {
     this.matrixService.getMatrixObservable().subscribe((matrixData) => {
       this.matrixData = matrixData;
     });
-  }
-
-  getSumOfRow(index: number): number {
-    return this.matrixData.matrix[index].reduce((total, cell) => {
-      return total + cell.value;
-    }, 0);
-  }
-
-  getAvgOfCol(index: number): number {
-    const amount = this.matrixData.matrix.reduce((total, cell) => {
-      return total + cell[index].value;
-    }, 0);
-
-    return Math.round(amount / this.matrixData.matrix.length);
-  }
-
-  getAvgOfSum(): number {
-    let arrayOfSum: number[] = [];
-    this.matrixData.matrix.forEach((_, index) => {
-      arrayOfSum.push(this.getSumOfRow(index));
-    });
-
-    const sum = arrayOfSum.reduce((total, cell) => {
-      return total + cell;
-    }, 0);
-    return Math.round(sum / arrayOfSum.length);
   }
 
   deleteRow(index: number): void {
@@ -59,32 +33,32 @@ export class MatrixComponent implements OnInit {
   mouseEnterHover(event: MouseEvent, indexRow: number, indexCol: number): void {
     (event.target as HTMLElement).classList.add('matrix__td__active');
 
-    this.matrixData.matrix.forEach((row, rowIndex) => {
-      row.forEach((_, cellIndex) => {
-        this.matrixData.matrix[rowIndex][cellIndex].close = this.findClosest(
-          indexRow,
-          indexCol
-        ).includes(this.matrixData.matrix[rowIndex][cellIndex].value);
+    this.matrixData.matrix.forEach((matrixRow, rowIndex) => {
+      matrixRow.row.forEach((_, cellIndex) => {
+        this.matrixData.matrix[rowIndex].row[cellIndex].close =
+          this.findClosest(indexRow, indexCol).includes(
+            this.matrixData.matrix[rowIndex].row[cellIndex].value
+          );
       });
     });
   }
 
   findClosest(indexRow: number, indexCol: number): number[] {
-    const chosenCell = this.matrixData.matrix[indexRow][indexCol].value;
+    const chosenCell = this.matrixData.matrix[indexRow].row[indexCol].value;
     const merged: number[] = [];
-    this.matrixData.matrix.forEach((col) =>
-      col.map((cell) => merged.push(cell.value))
+    this.matrixData.matrix.forEach((matrixRow) =>
+      matrixRow.row.map((cell) => merged.push(cell.value))
     );
 
     const sliceChosen = [
       ...merged.slice(
         0,
-        (indexRow + 1) * this.matrixData.matrix[0].length -
-          (this.matrixData.matrix[0].length - indexCol)
+        (indexRow + 1) * this.matrixData.matrix[0].row.length -
+          (this.matrixData.matrix[0].row.length - indexCol)
       ),
       ...merged.slice(
-        (indexRow + 1) * this.matrixData.matrix[0].length -
-          (this.matrixData.matrix[0].length - indexCol) +
+        (indexRow + 1) * this.matrixData.matrix[0].row.length -
+          (this.matrixData.matrix[0].row.length - indexCol) +
           1,
         merged.length
       ),
@@ -104,12 +78,8 @@ export class MatrixComponent implements OnInit {
   mouseLeaveHover(event: MouseEvent): void {
     (event.target as HTMLElement).classList.remove('matrix__td__active');
 
-    this.matrixData.matrix.map((row) => {
-      return row.map((cell) => (cell.close = false));
+    this.matrixData.matrix.map((matrixRow) => {
+      return matrixRow.row.map((cell) => (cell.close = false));
     });
-  }
-
-  cellTrackBy(index: number): number {
-    return index;
   }
 }

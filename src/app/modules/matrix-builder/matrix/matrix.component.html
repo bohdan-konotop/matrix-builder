@@ -4,35 +4,36 @@
     <table class="matrix__table">
       <tr>
         <th>№</th>
-        <th *ngFor="let _ of matrixData.matrix[0]; let colIndex = index">
+        <th *ngFor="let _ of matrixData.matrix[0].row; let colIndex = index">
           {{ colIndex + 1 }}
         </th>
         <th>Sum</th>
       </tr>
       <tr
-        *ngFor="let row of matrixData.matrix; let rowIndex = index; trackBy: cellTrackBy"
+        *ngFor="let matrixRow of matrixData.matrix; let rowIndex = index"
       >
         <td>{{ rowIndex + 1 }}</td>
         <td
           (click)="incrementCell(rowIndex, colIndex)"
           (mouseenter)="mouseEnterHover($event, rowIndex, colIndex)"
           (mouseleave)="mouseLeaveHover($event)"
-          *ngFor="let cell of row; let colIndex = index; trackBy: cellTrackBy"
+          *ngFor="let cell of matrixRow.row; let colIndex = index"
           [ngClass]="{
-            matrix__td__close: matrixData.matrix[rowIndex][colIndex].close
+            matrix__td__close: matrixData.matrix[rowIndex].row[colIndex].close
           }"
         >
           {{ cell.value }}
         </td>
-        <td>{{ getSumOfRow(rowIndex) }}</td>
+        <td
+          [style.background]="'linear-gradient(0, rgba(255,0,0,1) 65%, rgba(255,255,255,0) 65%)'">{{ matrixData.matrix[rowIndex].sum }}</td>
         <span (click)="deleteRow(rowIndex)" class="matrix__delete-row">x</span>
       </tr>
       <tr>
         <td>Avg</td>
-        <td *ngFor="let _ of matrixData.matrix[0]; let colIndex = index">
-          {{ getAvgOfCol(colIndex) }}
+        <td *ngFor="let _ of matrixData.matrix[0].row; let colIndex = index">
+          {{ matrixData.avg[colIndex] }}
         </td>
-        <td>{{ getAvgOfSum() }}</td>
+        <td>{{ matrixData.avgOfSum }}</td>
       </tr>
     </table>
   </div>
