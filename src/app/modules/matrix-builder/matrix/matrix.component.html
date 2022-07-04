@@ -1,4 +1,5 @@
-<div *ngIf="matrixData.matrix.length > 0" class="matrix__wrapper">
+<div *ngIf="!!matrixData.matrix[0]?.row?.[0]"
+     class="matrix__wrapper">
   <div class="matrix">
     <button (click)="addRow()" class="matrix__btn">Add row</button>
     <table class="matrix__table">
@@ -21,11 +22,13 @@
           [ngClass]="{
             matrix__td__close: matrixData.matrix[rowIndex].row[colIndex].close
           }"
+
         >
           {{ cell.value }}
         </td>
-        <td
-          [style.background]="'linear-gradient(0, rgba(255,0,0,1) 65%, rgba(255,255,255,0) 65%)'">{{ matrixData.matrix[rowIndex].sum }}</td>
+        <td (mouseenter)="mouseEnterSum($event, rowIndex)"
+            (mouseleave)="mouseLeaveSum($event, rowIndex)"
+            [style.background]="">{{ matrixData.matrix[rowIndex].sum }}</td>
         <span (click)="deleteRow(rowIndex)" class="matrix__delete-row">x</span>
       </tr>
       <tr>

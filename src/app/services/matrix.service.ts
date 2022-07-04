@@ -18,6 +18,42 @@ export class MatrixService {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
+  private static generateMatrix(
+    matrixInitial: MatrixData,
+    value: FormValue
+  ): MatrixData {
+    for (let i = 0; i < value.row; i++) {
+      const rowRandom: MatrixRow = { row: [], sum: 0 };
+
+      for (let j = 0; j < value.col; j++) {
+        const random = MatrixService.randomFromTo(100, 1000);
+
+        rowRandom.row.push({
+          value: random,
+          close: false,
+        });
+        rowRandom.sum += random;
+      }
+      matrixInitial.matrix.push(rowRandom);
+    }
+    return matrixInitial;
+  }
+
+  private static generateSum(matrixData: MatrixData): MatrixData {
+    matrixData.matrix.map((matrixRow) => {
+      matrixRow.sum = matrixRow.row.reduce((total, cell) => {
+        return total + cell.value;
+      }, 0);
+      return matrixRow;
+    });
+    const sumTotal = matrixData.matrix.reduce((total, matrixRow) => {
+      return total + matrixRow.sum;
+    }, 0);
+    matrixData.avgOfSum = Math.round(sumTotal / matrixData.matrix.length);
+
+    return matrixData;
+  }
+
   getMatrixObservable(): Observable<MatrixData> {
     return this.matrixData$;
   }
@@ -34,33 +70,12 @@ export class MatrixService {
       cell: value.cell,
     };
 
-    for (let i = 0; i < value.col; i++) {
-      const rowRandom: MatrixRow = { row: [], sum: 0 };
+    MatrixService.generateMatrix(matrixData, value);
 
-      for (let j = 0; j < value.row; j++) {
-        const random = MatrixService.randomFromTo(100, 1000);
+    this.generateAvg(matrixData);
 
-        rowRandom.row.push({
-          value: random,
-          close: false,
-        });
-        rowRandom.sum += random;
-      }
-      matrixData.matrix.push(rowRandom);
-    }
+    MatrixService.generateSum(matrixData);
 
-    matrixData.matrix.forEach((_, rowIndex) => {
-      const avgOfCol = matrixData.matrix.reduce((total, matrixRow) => {
-        return total + matrixRow.row[rowIndex].value;
-      }, 0);
-
-      matrixData.avg.push(Math.round(avgOfCol / matrixData.matrix.length));
-    });
-
-    const sumTotal = matrixData.matrix.reduce((total, matrixRow) => {
-      return total + matrixRow.sum;
-    }, 0);
-    matrixData.avgOfSum = Math.round(sumTotal / matrixData.matrix.length);
     this.matrixData.next(matrixData);
   }
 
@@ -71,6 +86,11 @@ export class MatrixService {
       ...matrixData.matrix.slice(0, index),
       ...matrixData.matrix.slice(index + 1, matrixData.matrix.length),
     ];
+
+    this.generateAvg(matrixData);
+
+    MatrixService.generateSum(matrixData);
+
     this.matrixData.next(matrixData);
   }
 
@@ -78,6 +98,11 @@ export class MatrixService {
     const matrixData: MatrixData = this.getMatrixData();
 
     matrixData.matrix[rowIndex].row[colIndex].value++;
+
+    this.generateAvg(matrixData);
+
+    MatrixService.generateSum(matrixData);
+
     this.matrixData.next(matrixData);
   }
 
@@ -94,6 +119,25 @@ export class MatrixService {
     matrixRow.sum = total;
     matrixData.matrix.push(matrixRow);
 
+    this.generateAvg(matrixData);
+
+    MatrixService.generateSum(matrixData);
+
     this.matrixData.next(matrixData);
+  }
+
+  private generateAvg(matrixData: MatrixData): MatrixData {
+    matrixData.avg = [];
+
+    if (matrixData.matrix[0]?.row !== undefined)
+      matrixData.matrix[0].row.forEach((_, rowIndex) => {
+        const avgOfCol = matrixData.matrix.reduce((total, matrixRow) => {
+          return total + matrixRow.row[rowIndex].value;
+        }, 0);
+
+        matrixData.avg.push(Math.round(avgOfCol / matrixData.matrix.length));
+      });
+
+    return matrixData;
   }
 }
